@@ -1,5 +1,11 @@
+using Cards.API.Extensions;
 using Cards.Core;
+using Cards.Core.Services.Interfaces;
+using Cards.Core.Services;
 using Cards.Data;
+using Cards.Data.Helpers.Migration;
+using Cards.Data.IRepository;
+using Cards.Data.Repository;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -12,16 +18,17 @@ var configuration = new ConfigurationBuilder()
 
 // Add services to the container.
 
+
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-// Register Project Services
-ServiceCollectionExtension.AddApplicationServices(builder.Services);
 
 string connectionString = builder.Configuration.GetConnectionString("AppConnectionString");
 
+
+// Register Project Services
 builder.Services.AddDbContext<ApplicationDbContext>(opt =>
 {
     opt.UseSqlServer(connectionString, builder =>
@@ -32,6 +39,8 @@ builder.Services.AddDbContext<ApplicationDbContext>(opt =>
     contextLifetime: ServiceLifetime.Scoped,
     optionsLifetime: ServiceLifetime.Scoped
 );
+ServiceCollectionExtension.AddApplicationServices(builder.Services);
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -47,4 +56,9 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-app.Run();
+//Migrate Database and Seed Initial Data
+app.MigrateDatabase<ApplicationDbContext>((context, services) =>
+{
+    var logger = services.GetService<ILogger<ApplicationDbContextSeed>>();
+    ApplicationDbContextSeed.SeedAsync(context, logger).Wait();
+}).Run();

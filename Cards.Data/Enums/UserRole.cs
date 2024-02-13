@@ -8,7 +8,7 @@ namespace Cards.Data.Enums
 {
     public enum UserRole
     {
-        Member,
-        Admin
+        Admin,
+        Member
     }
 }

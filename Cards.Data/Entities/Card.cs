@@ -13,8 +13,8 @@ namespace Cards.Data.Entities
     {
         [Required]
         public string Name { get; set; }
-        public string Description { get; set; }
-        public string Color { get; set; }
+        public string? Description { get; set; }
+        public string? Color { get; set; }
         public CardStatus Status { get; set; }
         [ForeignKey(nameof(User))]
         public int UserId { get; set; } 

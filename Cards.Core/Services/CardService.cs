@@ -21,10 +21,10 @@ namespace Cards.Core.Services
             _mapper = mapper;
         }
 
-        public async Task<IList<CardDto>> GetAllAsync(string? name, string? color, CardStatus? status, DateTime? createdDate)
+        public async Task<IList<CardDto>> GetAllAsync(string? name, string? color, CardStatus? status, DateTime? createdDate, string? sortBy, string? orderBy, int? page, int? size)
         {
 
-            var entities = await _cardRepository.GetAllAsync(name, color, status, createdDate);
+            var entities = await _cardRepository.GetAllAsync(name, color, status, createdDate, sortBy, orderBy, page, size);
             var cardDto = _mapper.Map<List<CardDto>>(entities);
             return cardDto;
         }

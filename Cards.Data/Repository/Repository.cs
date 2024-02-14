@@ -23,6 +23,7 @@ namespace Cards.Data.Repository
         {
 
             _context.Set<T>().Add(entity);
+            _context.Entry<T>(entity).State = EntityState.Added;
             await _context.SaveChangesAsync();
             return entity;
         }

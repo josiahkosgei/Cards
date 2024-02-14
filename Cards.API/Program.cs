@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Identity;
 using Cards.Data.Entities;
+using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -29,7 +30,7 @@ builder.Services.AddControllers().AddJsonOptions(options =>
     options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
 });
 
-//
+// Adds the default identity system configuration for the specified User and Role.
 builder.Services
     .AddIdentity<User, IdentityRole>(options =>
     {
@@ -41,12 +42,18 @@ builder.Services
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(swaggerOptions =>
+{
 
+    var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    swaggerOptions.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
+});
+
+//Get Connection String from Configuration
+string connectionString = builder.Configuration.GetConnectionString("AppConnectionString")!;
+// Registers the our DbContext as a service
 builder.Services.AddDbContext<ApplicationDbContext>(opt =>
 {
-    //Get Connection String from Configuration
-    string connectionString = builder.Configuration.GetConnectionString("AppConnectionString")!;
     opt.UseSqlServer(connectionString, builder =>
     {
         builder.EnableRetryOnFailure(5, TimeSpan.FromSeconds(10), null);
@@ -59,12 +66,13 @@ builder.Services.AddDbContext<ApplicationDbContext>(opt =>
 // Configure Extended Application Services
 ServiceCollectionExtension.AddApplicationServices(builder.Services);
 
-// Define Application Authentication Scheme 
-var secret = builder.Configuration["JWT:SecretKey"];
-var key = Encoding.ASCII.GetBytes(secret);
+// Registers the services required by Authentication service
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
+        // Define Application Authentication Scheme 
+        var secret = builder.Configuration["JWT:SecretKey"];
+        var key = Encoding.ASCII.GetBytes(secret!);
         options.TokenValidationParameters = new TokenValidationParameters
         {
             ValidateIssuer = false,

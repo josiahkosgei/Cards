@@ -10,6 +10,15 @@ namespace Cards.Data.Repository
         {
             _context = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
         }
+        public async Task<List<T>> GetAllAsync()
+        {
+            return await _context.Set<T>().ToListAsync();
+        }
+
+        public async Task<T> GetAsync(Guid id)
+        {
+            return await _context.Set<T>().FindAsync(id);
+        }
         public async Task<T> AddAsync(T entity)
         {
 
@@ -30,17 +39,8 @@ namespace Cards.Data.Repository
             return true;
         }
 
-        public async Task<IList<T>> GetAllAsync()
-        {
-            return await _context.Set<T>().ToListAsync();
-        }
 
-        public async Task<T> GetAsync(int id)
-        {
-            return await _context.Set<T>().FindAsync(id);
-        }
-
-        public async Task<T> UpdateAsync(int Id, T entity)
+        public async Task<T> UpdateAsync(Guid Id, T entity)
         {
             var dbEntity = await _context.FindAsync<T>(Id);
 
@@ -52,5 +52,6 @@ namespace Cards.Data.Repository
 
             return entity;
         }
+
     }
 }

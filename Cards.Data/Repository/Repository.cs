@@ -10,47 +10,53 @@ namespace Cards.Data.Repository
         {
             _context = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
         }
-        public async Task<T> AddAsync(T entity)
-        {
-
-            _context.Set<T>().Add(entity);
-            await _context.SaveChangesAsync();
-            return entity;
-        }
-
-        public async Task<bool> DeleteAsync(T entity)
-        {
-            using (var dbContextTransaction = await _context.Database.BeginTransactionAsync())
-            {
-                _context.Set<T>().Remove(entity);
-                await _context.SaveChangesAsync();
-
-                await dbContextTransaction.CommitAsync();
-            }
-            return true;
-        }
-
-        public async Task<IList<T>> GetAllAsync()
+        public async Task<List<T>> GetAllAsync()
         {
             return await _context.Set<T>().ToListAsync();
         }
 
-        public async Task<T> GetAsync(int id)
+        public async Task<T> GetAsync(Guid id)
         {
             return await _context.Set<T>().FindAsync(id);
         }
+        public async Task<T> AddAsync(T entity)
+        {
 
-        public async Task<T> UpdateAsync(int Id, T entity)
+            _context.Set<T>().Add(entity);
+            _context.Entry<T>(entity).State = EntityState.Added;
+            await _context.SaveChangesAsync();
+            return entity;
+        }
+
+
+        public async Task<T> UpdateAsync(Guid Id, T entity)
         {
             var dbEntity = await _context.FindAsync<T>(Id);
 
-            _context.Entry(dbEntity).CurrentValues.SetValues(entity);
+            if (dbEntity != null)
+            {
+                _context.Entry<T>(dbEntity).CurrentValues.SetValues(entity);
+                _context.Entry<T>(dbEntity).State = EntityState.Modified;
+                await _context.SaveChangesAsync();
 
-            _context.Entry(dbEntity).State = EntityState.Modified;
-            await _context.SaveChangesAsync();
 
-
-            return entity;
+                return entity;
+            }
+            return null;
         }
+
+        public async Task<bool> DeleteAsync(Guid id)
+        {
+            var entity = await _context.FindAsync<T>(id);
+            if (entity != null)
+            {
+                _context.Set<T>().Remove(entity);
+                await _context.SaveChangesAsync();
+
+                return true;
+            }
+            return false;
+        }
+
     }
 }

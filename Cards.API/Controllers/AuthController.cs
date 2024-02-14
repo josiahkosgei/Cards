@@ -5,6 +5,9 @@ using System.Net;
 
 namespace Cards.API.Controllers
 {
+    /// <summary>
+    /// Exposes Authentication endpoints
+    /// </summary>
     [Route("api/[controller]")]
     [ApiController]
     public class AuthController : ControllerBase
@@ -14,7 +17,11 @@ namespace Cards.API.Controllers
         {
             _userService = userService;
         }
-
+        /// <summary>
+        /// Login
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
         [HttpPost]
         [ProducesResponseType(typeof(LoginResponse), (int)HttpStatusCode.OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]

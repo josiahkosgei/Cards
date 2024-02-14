@@ -4,8 +4,18 @@ using Polly;
 
 namespace Cards.API.Extensions
 {
+    /// <summary>
+    /// IHost Extension for Running  Migrations
+    /// </summary>
     public static class AppExtensions
     {
+        /// <summary>
+        /// Run Migration against a database
+        /// </summary>
+        /// <typeparam name="TContext"></typeparam>
+        /// <param name="host"></param>
+        /// <param name="seeder"></param>
+        /// <returns></returns>
         public static IHost MigrateDatabase<TContext>(this IHost host, Action<TContext, IServiceProvider> seeder) where TContext : DbContext
         {
             IWebHostEnvironment env = host.Services.GetRequiredService<IWebHostEnvironment>();
@@ -28,7 +38,7 @@ namespace Cards.API.Extensions
                                 });
 
                     // Invoke Migrate and Seed Intial Data
-                    MigrateAndSeedData(seeder!, context, services);
+                    MigrateAndSeedData(seeder!, context!, services);
 
                 }
                 catch (SqlException ex)

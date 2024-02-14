@@ -44,6 +44,15 @@ namespace Cards.Data.Repository
             var entities = await predicate.ToListAsync();
             return entities;
         }
+        public new async Task<Card> AddAsync(Card entity)
+        {
+            var currentUser = GetCurrentUser();
+            entity.UserId=currentUser.Id;
+            entity.Status = CardStatus.ToDo;
+            _context.Set<Card>().Add(entity);
+            await _context.SaveChangesAsync();
+            return entity;
+        }
 
         // Get Current User using  Http Accessor class
         private CurrentUserModel GetCurrentUser()

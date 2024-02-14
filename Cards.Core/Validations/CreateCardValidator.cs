@@ -3,9 +3,9 @@ using FluentValidation;
 
 namespace Cards.Core.Validations
 {
-    public class CardValidator : AbstractValidator<CardDto>
+    public class CreateCardValidator : AbstractValidator<CreateCardDto>
     {
-        public CardValidator()
+        public CreateCardValidator()
         {
             RuleFor(card => card.Name)
            .NotEmpty().NotNull()

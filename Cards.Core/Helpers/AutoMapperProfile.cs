@@ -12,6 +12,9 @@ namespace Cards.Core.Helpers
         public AutoMapperProfile()
         {
             CreateMap<Card, CardDto>().ReverseMap();
+            CreateMap<Card, CreateCardDto>().ReverseMap();
+            CreateMap<Card, UpdateCardDto>().ReverseMap();
+            CreateMap<User, UserDto>().ReverseMap();
         }
     }
 }

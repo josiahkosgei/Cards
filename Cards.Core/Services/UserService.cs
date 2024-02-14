@@ -34,7 +34,7 @@ namespace Cards.Core.Services
                 return new LoginResponse { Message = ResponseEnum.InvalidCredentials.EnumFormat().desc, };
             }
             var user = await _context.Users.FirstOrDefaultAsync(x => x.Email == request.Email);
-            var accessToken = JWTService.GenerateJWT(user, _config["JWT:SecretKey"]);
+            var accessToken = JWTService.GenerateJWT(user!, _config["JWT:SecretKey"]!);
             return new LoginResponse { Message = ResponseEnum.Successful.EnumFormat().desc, AccessToken = accessToken };
 
         }

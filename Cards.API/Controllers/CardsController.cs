@@ -1,10 +1,12 @@
 ﻿using AutoMapper;
+using Azure;
 using Cards.Core.Models;
 using Cards.Core.Services.Interfaces;
 using Cards.Data.Enums;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Drawing;
 using System.Net;
 
 namespace Cards.API.Controllers
@@ -34,8 +36,8 @@ namespace Cards.API.Controllers
         {
             try
             {
-                var cards = await _cardService.GetAllAsync(name, color, status, createdDate);
-                return Ok(cards);
+                var response = await _cardService.GetAllAsync(name, color, status, createdDate);
+                return Ok(response);
             }
             catch (Exception ex)
             {
@@ -49,11 +51,12 @@ namespace Cards.API.Controllers
         [HttpGet("{id}")]
         [ProducesResponseType(typeof(CardDto), (int)HttpStatusCode.OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> GetCard(int id)
+        public async Task<IActionResult> GetCard(Guid id)
         {
             try
             {
-                return Ok();
+                var response = await _cardService.GetAsync(id);
+                return Ok(response);
             }
             catch (Exception ex)
             {
@@ -67,11 +70,12 @@ namespace Cards.API.Controllers
         [HttpPost]
         [ProducesResponseType(typeof(CardDto), (int)HttpStatusCode.OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> CreateCard(CardDto cardDto)
+        public async Task<IActionResult> CreateCard(CreateCardDto cardDto)
         {
             try
             {
-                return Ok();
+                var response = await _cardService.AddAsync(cardDto);
+                return Ok(response);
             }
             catch (Exception ex)
             {
@@ -81,14 +85,15 @@ namespace Cards.API.Controllers
             }
         }
         // Update a card
-        [HttpPut("{id}")]
+        [HttpPatch("{id}")]
         [ProducesResponseType(typeof(CardDto), (int)HttpStatusCode.OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> UpdateCard(int id, CardDto updatedCardDto)
+        public async Task<IActionResult> UpdateCard(Guid id, UpdateCardDto updatedCardDto)
         {
             try
             {
-                return Ok();
+                var response = await _cardService.UpdateAsync(id, updatedCardDto);
+                return Ok(response);
             }
             catch (Exception ex)
             {
@@ -102,11 +107,12 @@ namespace Cards.API.Controllers
         [HttpDelete("{id}")]
         [ProducesResponseType(typeof(CardDto), (int)HttpStatusCode.OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> DeleteCard(int id)
+        public async Task<IActionResult> DeleteCard(Guid id)
         {
             try
             {
-                return Ok();
+                var response = await _cardService.DeleteAsync(id);
+                return Ok(response);
             }
             catch (Exception ex)
             {

@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Cards.Core.Enums;
 using Cards.Core.Models;
 using Cards.Core.Services.Interfaces;
 using Cards.Data.Entities;
@@ -11,12 +12,12 @@ namespace Cards.Core.Services
     public class CardService : ICardService
     {
         private readonly ICardRepository _cardRepository;
-        private readonly IValidator<CardDto> _validator;
+        private readonly IValidator<CreateCardDto> _createCardValidator;
         private readonly IMapper _mapper;
-        public CardService(ICardRepository cardRepository, IValidator<CardDto> validator, IMapper mapper)
+        public CardService(ICardRepository cardRepository, IValidator<CreateCardDto> validator, IMapper mapper)
         {
             _cardRepository = cardRepository;
-            _validator = validator;
+            _createCardValidator = validator;
             _mapper = mapper;
         }
 
@@ -34,26 +35,35 @@ namespace Cards.Core.Services
             var cardDto = _mapper.Map<CardDto>(entity);
             return cardDto;
         }
-        public async Task<CardDto> AddAsync(CardDto cardDto)
+        public async Task<CardDto> AddAsync(CreateCardDto cardDto)
         {
+            var validatorResult = await _createCardValidator.ValidateAsync(cardDto);
+            if (!validatorResult.IsValid)
+            {
+                var errors = validatorResult.Errors.Select(e => e.ErrorMessage).ToList();
+                return new CardDto { Message = string.Join(", ", errors) };
+            }
+
+
             var entity = _mapper.Map<Card>(cardDto);
             entity = await _cardRepository.AddAsync(entity);
-            cardDto = _mapper.Map<CardDto>(entity);
-            return cardDto;
+            var createdCardDto = _mapper.Map<CardDto>(entity);
+            return createdCardDto;
         }
-        public async Task<CardDto> UpdateAsync(Guid id, CardDto cardDto)
+        public async Task<CardDto> UpdateAsync(Guid id, UpdateCardDto cardDto)
         {
             var entity = _mapper.Map<Card>(cardDto);
             entity.Id = id;
             entity = await _cardRepository.UpdateAsync(id, entity);
-            cardDto = _mapper.Map<CardDto>(entity);
-            return cardDto;
+            var updatedCardDto = _mapper.Map<CardDto>(entity);
+            return updatedCardDto;
         }
 
-        public async Task<bool> DeleteAsync(CardDto cardDto)
-        {
-            var entity = _mapper.Map<Card>(cardDto);
-            return await _cardRepository.DeleteAsync(entity);
+        public async Task<CardDto> DeleteAsync(Guid id)
+        {            
+            var response= await _cardRepository.DeleteAsync(id);
+            CardDto cardDto = new CardDto() { Message= response ?"Card Deleted": "Delete Failed" };
+            return cardDto;
         }
 
     }

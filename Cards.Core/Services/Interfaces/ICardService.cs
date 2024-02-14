@@ -7,8 +7,8 @@ namespace Cards.Core.Services.Interfaces
     {
         Task<IList<CardDto>> GetAllAsync(string? name, string? color, CardStatus? status, DateTime? createdDate);
         Task<CardDto> GetAsync(Guid id);
-        Task<CardDto> AddAsync(CardDto cardDto);
-        Task<CardDto> UpdateAsync(Guid id, CardDto cardDto);
-        Task<bool> DeleteAsync(CardDto cardDto);
+        Task<CardDto> AddAsync(CreateCardDto cardDto);
+        Task<CardDto> UpdateAsync(Guid id, UpdateCardDto cardDto);
+        Task<CardDto> DeleteAsync(Guid id);
     }
 }

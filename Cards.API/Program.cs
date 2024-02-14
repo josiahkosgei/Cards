@@ -29,6 +29,7 @@ builder.Services.AddControllers().AddJsonOptions(options =>
     options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
 });
 
+//
 builder.Services
     .AddIdentity<User, IdentityRole>(options =>
     {
@@ -42,11 +43,10 @@ builder.Services
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-
-//Get Connection String from Configuration
-string connectionString = builder.Configuration.GetConnectionString("AppConnectionString");
 builder.Services.AddDbContext<ApplicationDbContext>(opt =>
 {
+    //Get Connection String from Configuration
+    string connectionString = builder.Configuration.GetConnectionString("AppConnectionString")!;
     opt.UseSqlServer(connectionString, builder =>
     {
         builder.EnableRetryOnFailure(5, TimeSpan.FromSeconds(10), null);

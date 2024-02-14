@@ -27,30 +27,34 @@ namespace Cards.Data.Repository
             return entity;
         }
 
-        public async Task<bool> DeleteAsync(T entity)
-        {
-            using (var dbContextTransaction = await _context.Database.BeginTransactionAsync())
-            {
-                _context.Set<T>().Remove(entity);
-                await _context.SaveChangesAsync();
-
-                await dbContextTransaction.CommitAsync();
-            }
-            return true;
-        }
-
 
         public async Task<T> UpdateAsync(Guid Id, T entity)
         {
             var dbEntity = await _context.FindAsync<T>(Id);
 
-            _context.Entry(dbEntity).CurrentValues.SetValues(entity);
+            if (dbEntity != null)
+            {
+                _context.Entry<T>(dbEntity).CurrentValues.SetValues(entity);
+                _context.Entry<T>(dbEntity).State = EntityState.Modified;
+                await _context.SaveChangesAsync();
 
-            _context.Entry(dbEntity).State = EntityState.Modified;
-            await _context.SaveChangesAsync();
 
+                return entity;
+            }
+            return null;
+        }
 
-            return entity;
+        public async Task<bool> DeleteAsync(Guid id)
+        {
+            var entity = await _context.FindAsync<T>(id);
+            if (entity != null)
+            {
+                _context.Set<T>().Remove(entity);
+                await _context.SaveChangesAsync();
+
+                return true;
+            }
+            return false;
         }
 
     }

@@ -13,12 +13,14 @@ namespace Cards.Core.Services
     {
         private readonly ICardRepository _cardRepository;
         private readonly IValidator<CreateCardDto> _createCardValidator;
+        private readonly IValidator<UpdateCardDto> _updateCardValidator;
         private readonly IMapper _mapper;
-        public CardService(ICardRepository cardRepository, IValidator<CreateCardDto> validator, IMapper mapper)
+        public CardService(ICardRepository cardRepository, IValidator<CreateCardDto> validator, IMapper mapper, IValidator<UpdateCardDto> updateCardValidator)
         {
             _cardRepository = cardRepository;
             _createCardValidator = validator;
             _mapper = mapper;
+            _updateCardValidator = updateCardValidator;
         }
 
         public async Task<IList<CardDto>> GetAllAsync(string? name, string? color, CardStatus? status, DateTime? createdDate, string? sortBy, string? orderBy, int? page, int? size)
@@ -52,6 +54,12 @@ namespace Cards.Core.Services
         }
         public async Task<CardDto> UpdateAsync(Guid id, UpdateCardDto cardDto)
         {
+            var validatorResult = await _updateCardValidator.ValidateAsync(cardDto);
+            if (!validatorResult.IsValid)
+            {
+                var errors = validatorResult.Errors.Select(e => e.ErrorMessage).ToList();
+                return new CardDto { Message = string.Join(", ", errors) };
+            }
             var entity = _mapper.Map<Card>(cardDto);
             entity.Id = id;
             entity = await _cardRepository.UpdateAsync(id, entity);

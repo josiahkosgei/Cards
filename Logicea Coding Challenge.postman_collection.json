@@ -4,7 +4,7 @@
 		"name": "Logicea Coding Challenge",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "19584485",
-		"_collection_link": "https://solar-spaceship-319314.postman.co/workspace/mwazi~d94141e5-4a36-45ad-b612-542f3fc737c5/collection/19584485-927ce5a5-475a-4058-8215-745dcdf202bc?action=share&source=collection_link&creator=19584485"
+		"_collection_link": "https://solar-spaceship-319314.postman.co/workspace/d94141e5-4a36-45ad-b612-542f3fc737c5/collection/19584485-927ce5a5-475a-4058-8215-745dcdf202bc?action=share&source=collection_link&creator=19584485"
 	},
 	"item": [
 		{
@@ -14,7 +14,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n  \"email\": \"sstuart9@geocities.com\",\r\n  \"password\": \"1234\"\r\n}",
+					"raw": "{\r\n  \"email\": \"sdobbin4@weibo.com\",\r\n  \"password\": \"1234\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -52,7 +52,7 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "https://localhost:44345/api/Cards",
+					"raw": "https://localhost:44345/api/Cards?sortBy=color&orderBy=createdDate",
 					"protocol": "https",
 					"host": [
 						"localhost"
@@ -65,7 +65,7 @@
 					"query": [
 						{
 							"key": "name",
-							"value": "",
+							"value": "Eamon",
 							"disabled": true
 						},
 						{
@@ -82,6 +82,14 @@
 							"key": "createdDate",
 							"value": "",
 							"disabled": true
+						},
+						{
+							"key": "sortBy",
+							"value": "color"
+						},
+						{
+							"key": "orderBy",
+							"value": "createdDate"
 						}
 					]
 				}
@@ -118,7 +126,7 @@
 					"variable": [
 						{
 							"key": "id",
-							"value": ""
+							"value": "91b6fa41-0ecd-49bd-15af-08dc2cb961ba"
 						}
 					]
 				}
@@ -142,7 +150,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n  \"name\": \"Doraco\",\r\n  \"color\": \"#5e8a5\",\r\n  \"status\": \"ToDo\"\r\n}",
+					"raw": "{\r\n    \"name\": \"Trucado II\",\r\n    \"description\": \"Trucado Wilcinskis II\",\r\n    \"color\": \"#5e8a63\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -181,7 +189,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "\r\n    {\r\n        \"status\": \"InProgress\"\r\n    }",
+					"raw": "{\r\n\r\n    \"name\": \"Trucado\",\r\n    \"description\": null,\r\n    \"color\": \"\",\r\n    \"status\": \"Done\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -240,7 +248,7 @@
 					"variable": [
 						{
 							"key": "id",
-							"value": ""
+							"value": "f1f97c95-247a-49ef-69b7-08dc2d33bbf0"
 						}
 					]
 				}
